@@ -21,11 +21,7 @@ async function createClientTable() {
       created_at TIMESTAMP DEFAULT now(),
       updated_at TIMESTAMP
     )
-   
   `;
-  await conn`
-  ALTER TABLE client 
-  ADD CONSTRAINT uniquePerson UNIQUE (name, address);`;
 }
 
 createClientTable().then(() => {
@@ -47,3 +43,6 @@ async function dropDatabase() {
 // function selectAll() {
 //   return conn.query("SELECT * FROM hello_world");
 // }
+// await conn`
+// ALTER TABLE client
+// ADD CONSTRAINT uniquePerson UNIQUE (name, address);`;

@@ -20,15 +20,10 @@ const sql = postgres({
 export async function POST(req: Request, res: Response) {
   try {
     const body = (await bodyToJson(req)) as ClientData;
-    console.log(body);
 
     const { name, address } = body;
 
     await sql`INSERT INTO client (name, address, created_at, updated_at) VALUES (${name}, ${address}, now(), now())`;
-
-    const users = await sql`SELECT * FROM client`;
-
-    console.log(users);
 
     return new NextResponse("Client created successfully", { status: 200 });
   } catch (error) {
@@ -48,14 +43,13 @@ async function bodyToJson(req: Request) {
     .read()
     .then(function processText({ done, value }): any {
       if (done) {
-        console.log("Stream complete", value);
         return {
           value: u8ArrayConcat(result, value ?? new Uint8Array()),
           done,
         };
       }
       result = u8ArrayConcat(result, value);
-      console.log(result);
+
       return reader.read().then(processText);
     });
 
@@ -64,7 +58,6 @@ async function bodyToJson(req: Request) {
   }
 
   const response = decoder.decode(value, { stream: true });
-  console.log("aaaaaaaaaa", value, done);
 
   return JSON.parse(response);
 }
@@ -74,4 +67,15 @@ function u8ArrayConcat(a1: Uint8Array, a2: Uint8Array): Uint8Array {
   mergedArray.set(a1);
   mergedArray.set(a2, a1.length);
   return mergedArray;
+}
+
+export async function GET(req: Request, res: Response) {
+  try {
+    const users = await sql`SELECT * FROM client`;
+
+    return new NextResponse(JSON.stringify(users), { status: 200 });
+  } catch (error) {
+    console.error("CLIENT_GET", error);
+    return new NextResponse("Internal error", { status: 500 });
+  }
 }

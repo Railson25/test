@@ -7,6 +7,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "./ui/input";
 import { Separator } from "./ui/separator";
 import { Button } from "./ui/button";
+import toast from "react-hot-toast";
+
+import { useState } from "react";
 
 const formSchema = z.object({
   name: z.string().min(1, {
@@ -17,9 +20,11 @@ const formSchema = z.object({
   }),
 });
 
-type RegisterValues = z.infer<typeof formSchema>;
+export type RegisterValues = z.infer<typeof formSchema>;
 
 export const ClientForm = () => {
+  const [loading, setLoading] = useState(false);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -30,6 +35,8 @@ export const ClientForm = () => {
 
   const onSubmit = async (data: RegisterValues) => {
     try {
+      setLoading(true);
+
       const response = await fetch("/api/client", {
         method: "POST",
         headers: {
@@ -42,15 +49,19 @@ export const ClientForm = () => {
         throw new Error("Failed to create client");
       }
 
-      alert("Client created successfully");
+      form.reset();
+
+      location.reload();
     } catch (error) {
       console.error("Error creating client:", error);
-      alert("Failed to create client. Please try again.");
+      toast.error("Failed to create client. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="py-2 pb-4 gap-10 flex flex-col">
+    <div className=" gap-10 flex flex-col w-1/2 max-md:w-full">
       <div>
         <h2 className="text-3xl font-bold tracking-tight">Register Client</h2>
       </div>
@@ -84,7 +95,9 @@ export const ClientForm = () => {
               </FormItem>
             )}
           />
-          <Button type="submit">Register</Button>
+          <Button type="submit" disabled={loading}>
+            Register
+          </Button>
         </form>
       </Form>
     </div>
