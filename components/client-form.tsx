@@ -17,6 +17,8 @@ const formSchema = z.object({
   }),
 });
 
+type RegisterValues = z.infer<typeof formSchema>;
+
 export const ClientForm = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -26,6 +28,27 @@ export const ClientForm = () => {
     },
   });
 
+  const onSubmit = async (data: RegisterValues) => {
+    try {
+      const response = await fetch("/api/client", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create client");
+      }
+
+      alert("Client created successfully");
+    } catch (error) {
+      console.error("Error creating client:", error);
+      alert("Failed to create client. Please try again.");
+    }
+  };
+
   return (
     <div className="py-2 pb-4 gap-10 flex flex-col">
       <div>
@@ -33,7 +56,10 @@ export const ClientForm = () => {
       </div>
       <Separator />
       <Form {...form}>
-        <form onSubmit={() => {}} className="flex flex-col gap-8">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="flex flex-col gap-8"
+        >
           <FormField
             control={form.control}
             name="name"
