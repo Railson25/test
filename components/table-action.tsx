@@ -15,26 +15,19 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useClientContext } from "@/context/client-context";
 
 interface ClientActionsProps {
   data: ClientColumn;
 }
 
 export const ClientActions = ({ data }: ClientActionsProps) => {
-  const { setIsEditing, setClientIdToUpdate } = useClientContext();
-  const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-
-  const onUpdate = () => {
-    setIsEditing(true);
-    setClientIdToUpdate(data.id);
-  };
 
   const onDelete = async () => {
     try {
       setLoading(true);
+      console.log("data id", data.id);
       await axios.delete(`/api/client/${data.id}`);
       router.refresh();
       toast.success("Client deleted");
@@ -42,9 +35,9 @@ export const ClientActions = ({ data }: ClientActionsProps) => {
       toast.error("Something went wrong");
     } finally {
       setLoading(false);
-      setOpen(false);
     }
   };
+
   return (
     <>
       <DropdownMenu>
@@ -55,12 +48,7 @@ export const ClientActions = ({ data }: ClientActionsProps) => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          <DropdownMenuItem onClick={() => router.push(`/`)}>
-            <Edit className="mr-2 h-4 w-4" />
-            Update
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={onUpdate}>
+          <DropdownMenuItem onClick={onDelete} disabled={loading}>
             <Trash className="mr-2 h-4 w-4" />
             Delete
           </DropdownMenuItem>

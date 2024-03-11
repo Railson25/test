@@ -32,7 +32,7 @@ export async function POST(req: Request, res: Response) {
   }
 }
 
-async function bodyToJson(req: Request) {
+export async function bodyToJson(req: Request) {
   //
   const reader = req.body!.getReader();
   const decoder = new TextDecoder();
@@ -62,7 +62,7 @@ async function bodyToJson(req: Request) {
   return JSON.parse(response);
 }
 
-function u8ArrayConcat(a1: Uint8Array, a2: Uint8Array): Uint8Array {
+export function u8ArrayConcat(a1: Uint8Array, a2: Uint8Array): Uint8Array {
   var mergedArray = new Uint8Array(a1.length + a2.length);
   mergedArray.set(a1);
   mergedArray.set(a2, a1.length);

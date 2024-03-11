@@ -10,6 +10,7 @@ import { Button } from "./ui/button";
 import toast from "react-hot-toast";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   name: z.string().min(1, {
@@ -23,6 +24,8 @@ const formSchema = z.object({
 export type RegisterValues = z.infer<typeof formSchema>;
 
 export const ClientForm = () => {
+  const router = useRouter();
+
   const [loading, setLoading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -51,7 +54,7 @@ export const ClientForm = () => {
 
       form.reset();
 
-      location.reload();
+      router.push("/");
     } catch (error) {
       console.error("Error creating client:", error);
       toast.error("Failed to create client. Please try again.");
