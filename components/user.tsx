@@ -23,6 +23,8 @@ export const User = () => {
             id: item.id,
             name: item.name,
             address: item.address,
+            email: item.email,
+            phone: item.phone,
           })
         );
 

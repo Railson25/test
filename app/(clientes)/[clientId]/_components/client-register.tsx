@@ -27,13 +27,15 @@ export const ClientRegister = () => {
     fetchData();
   }, [params.clientId]);
 
+  const clientId = Array.isArray(params.clientId)
+    ? params.clientId[0]
+    : params.clientId;
   const clientToDisplay =
-    formattedClient?.find(
-      (client) => client.id === parseInt(params.clientId, 10)
-    ) ?? null;
+    formattedClient?.find((client) => client.id === parseInt(clientId, 10)) ??
+    null;
 
   return (
-    <div>
+    <div className="px-4 pt-5">
       <ClientForm initialData={clientToDisplay} />
     </div>
   );

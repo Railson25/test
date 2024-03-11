@@ -18,6 +18,8 @@ async function createClientTable() {
       id SERIAL PRIMARY KEY,
       name VARCHAR (20)  NOT NULL,
       address VARCHAR (50)  NOT NULL,
+      email VARCHAR (50)  NOT NULL,
+      phone VARCHAR (50)  NOT NULL,
       created_at TIMESTAMP DEFAULT now(),
       updated_at TIMESTAMP
     )

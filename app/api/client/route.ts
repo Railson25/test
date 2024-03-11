@@ -4,6 +4,8 @@ import postgres, { Sql } from "postgres";
 interface ClientData {
   name: string;
   address: string;
+  email: string;
+  phone: string;
 }
 
 let { PGHOST, PGDATABASE, PGUSER, PGPASSWORD } = process.env;
@@ -21,9 +23,9 @@ export async function POST(req: Request, res: Response) {
   try {
     const body = (await bodyToJson(req)) as ClientData;
 
-    const { name, address } = body;
+    const { name, address, email, phone } = body;
 
-    await sql`INSERT INTO client (name, address, created_at, updated_at) VALUES (${name}, ${address}, now(), now())`;
+    await sql`INSERT INTO client (name, address, email, phone, created_at, updated_at) VALUES (${name}, ${address}, ${email}, ${phone}, now(), now())`;
 
     return new NextResponse("Client created successfully", { status: 200 });
   } catch (error) {

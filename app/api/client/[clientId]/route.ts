@@ -41,13 +41,15 @@ export async function PATCH(
     const body = await bodyToJson(req);
     console.log("Parsed Body:", body);
 
-    const { name, address } = body;
+    const { name, address, email, phone } = body;
 
     await sql`
       UPDATE client
       SET
         name = ${name},
-        address = ${address}
+        address = ${address},
+        email = ${email},
+        phone = ${phone}
       WHERE id = ${params.clientId}
     `;
 

@@ -28,8 +28,7 @@ export const ClientActions = ({ data }: ClientActionsProps) => {
     try {
       setLoading(true);
       await axios.delete(`/api/client/${data.id}`);
-      router.refresh();
-      toast.success("Client deleted");
+      location.reload();
     } catch (error) {
       toast.error("Something went wrong");
     } finally {
