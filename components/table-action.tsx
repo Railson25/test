@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { Edit, MoreHorizontal, Trash } from "lucide-react";
+import { MoreHorizontal, Trash } from "lucide-react";
 import { useState } from "react";
 
 import { ClientColumn } from "./table-column";
@@ -27,7 +27,6 @@ export const ClientActions = ({ data }: ClientActionsProps) => {
   const onDelete = async () => {
     try {
       setLoading(true);
-      console.log("data id", data.id);
       await axios.delete(`/api/client/${data.id}`);
       router.refresh();
       toast.success("Client deleted");
@@ -48,6 +47,11 @@ export const ClientActions = ({ data }: ClientActionsProps) => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
+          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuItem onClick={() => router.push(`/${data.id}`)}>
+            <Trash className="mr-2 h-4 w-4" />
+            Update
+          </DropdownMenuItem>
           <DropdownMenuItem onClick={onDelete} disabled={loading}>
             <Trash className="mr-2 h-4 w-4" />
             Delete

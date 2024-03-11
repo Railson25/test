@@ -10,7 +10,8 @@ import { Button } from "./ui/button";
 import toast from "react-hot-toast";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import axios from "axios";
 
 const formSchema = z.object({
   name: z.string().min(1, {
@@ -21,43 +22,48 @@ const formSchema = z.object({
   }),
 });
 
+export interface Client {
+  id: number;
+  name: string;
+  address: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export type ClientOrNull = Client | null;
+
 export type RegisterValues = z.infer<typeof formSchema>;
 
-export const ClientForm = () => {
+export const ClientForm = ({ initialData }: { initialData: ClientOrNull }) => {
   const router = useRouter();
-
+  const params = useParams();
   const [loading, setLoading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
+    defaultValues: initialData || {
       name: "",
       address: "",
     },
   });
 
+  const action = initialData ? "Save changes" : "Register";
+  console.log("aaaaaaaaaa", initialData);
+
   const onSubmit = async (data: RegisterValues) => {
     try {
       setLoading(true);
-
-      const response = await fetch("/api/client", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to create client");
+      if (initialData) {
+        await axios.patch(`/api/client/${String(params.clientId)}`, data);
+        toast.success("Client updated");
+      } else {
+        await axios.post(`/api/client`, form.getValues());
+        toast.success("Client created");
       }
-
-      form.reset();
-
-      router.push("/");
+      router.push(`/`);
+      router.refresh();
     } catch (error) {
-      console.error("Error creating client:", error);
-      toast.error("Failed to create client. Please try again.");
+      toast.error("Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -99,7 +105,7 @@ export const ClientForm = () => {
             )}
           />
           <Button type="submit" disabled={loading}>
-            Register
+            {action}
           </Button>
         </form>
       </Form>

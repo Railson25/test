@@ -33,7 +33,6 @@ export async function POST(req: Request, res: Response) {
 }
 
 export async function bodyToJson(req: Request) {
-  //
   const reader = req.body!.getReader();
   const decoder = new TextDecoder();
 
